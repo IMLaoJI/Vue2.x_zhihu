@@ -1,0 +1,211 @@
+<template>
+  <div class="sidebar-box" :class="{'show-sidebar':showSidebar}">
+    <div class="swiper-slide">
+
+
+
+      <!--侧边栏头部-->
+      <div class="sidebar-header"  @click="hiddenBar">
+      <router-link :to="{name: 'author', params: { id: '888'}}">
+       <div class="user">
+          <img src="https://avatars2.githubusercontent.com/u/16029951?v=3&s=460" alt="">
+          <p>{{uname}}</p>
+        </div>
+      </router-link>
+
+       
+        <div class="function">
+
+          <div class="function-sub">
+            <i class="iconfont">&#xe614</i>
+            <p>我的收藏</p>
+          </div>
+
+          <div class="function-sub">
+            <i class="iconfont">&#xe60f</i>
+            <p>离线下载</p>
+          </div>
+
+        </div>
+      </div>
+      <!--侧边栏列表-->
+
+
+
+      <div class="sidebar-list">
+
+        <p  class="sidebar-list-first" @click="hiddenBar"> <router-link :to="{path: '/'}"><i class="iconfont">&#xe61b</i>首页</router-link></p>
+        <ul class="sidebar-list-ul">
+        
+            <router-link tag="li" :to="{name: 'theme', params: { id: item.id }}" class="sidebar-list-li" v-for="item in list" >
+               <p @click="hiddenBar">{{item.name}}</p>
+            <div>+</div>
+            </router-link>
+           
+          
+        </ul>
+      </div>
+
+
+    </div>
+  </div>
+</template>
+
+<script>
+  /*eslint-disable no-new*/
+  import ajax from '../ajax'
+  export default{
+    props: ['showSidebar', 'tip'],
+    data () {
+      return {
+        list: [],
+        uname:'未登录'
+      }
+    },
+    mounted () {
+      this.getList()
+    },
+    methods: {
+      getList () {
+          const jsonBird = 'https://bird.ioliu.cn/v1/?url=';
+          const zhihu = 'http://news-at.zhihu.com';
+          var url = jsonBird+zhihu;
+        let _this = this
+        ajax({
+//          url: 'http://news-at.zhihu.com/api/4/themes',
+          url:`${url}/api/4/themes`,
+          method: 'GET',
+          callback: function (res) {
+            _this.list = res.others
+            // console.log(_this.list);
+            
+//            console.log(_this.list)
+          }
+        })
+      },
+      hiddenBar () {
+        window.document.body.className = ''
+        window.document.querySelector('html').className = ''
+//        document.body.style.overflow = 'initial'
+//        window.document.querySelector('html').style.overflow = 'initial'
+    
+        this.$emit("hide-side-bar")
+        this.$emit("changetip")
+     
+      }
+    }
+  }
+</script>
+
+<style scoped lang="scss" rel="stylesheet/scss">
+  .iconfont {
+    font-family:"iconfont";
+    font-size: 14px;
+    font-style:normal;
+    color: #ffffff;
+  }
+
+  .show-sidebar{
+    transform: translateX(290px);
+  }
+  .sidebar-box{
+    position: fixed;
+    transform: translateZ(0);
+    height: 100%;
+    overflow: auto;
+    width: 290px;
+    left: -290px;
+    z-index: 99;
+    top: 0;
+    bottom: 0;
+    transition: all .3s ease;
+    &.show-sidebar{
+      transform: translateX(290px);
+    }
+    .swiper-slide {
+      font-size: 15px;
+      height: auto;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+  }
+  .sidebar-box{
+    .sidebar-header{
+      padding: 15px;
+      background: #00A2EA;
+      .user{
+        display: flex;
+        flex-direction: row;
+        >img{
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+        }
+        >p{
+          margin-left: 20px;
+          line-height: 30px;
+          flex: 1;
+          font-size: 18px;
+          font-weight: 300;
+          color: #ffffff;
+        }
+      }
+    }
+    .function{
+      margin-top: 25px;
+      display: flex;
+      flex-direction: row;
+      color: #ffffff;
+      .function-sub{
+        padding-left: 52px;
+        flex: 1;
+        font-size: 13px;
+        font-weight: 300;
+        position: relative;
+        >i{
+          position: absolute;
+          top: 0;
+          left: 20px;
+        }
+      }
+    }
+  }
+
+  .sidebar-list{
+    padding-bottom: 20px;
+    background: #f9f9f9;
+    .sidebar-list-first{
+      background: #f9f9f9;
+      color: #00A2EA;
+      height: 47px;
+      line-height: 47px;
+      font-size: 15px;
+      padding-left: 55px;
+      position: relative;
+      >i{
+        color: #00A2EA;
+        font-size: 20px;
+        position: absolute;
+        top: 0px;
+        left: 20px;
+      }
+    }
+    .sidebar-list-li{
+      height: 47px;
+      line-height: 47px;
+      display: flex;
+      flex-direction: row;
+      padding-left: 15px;
+      >p{
+        flex: 1;
+      }
+      >div{
+        padding-right: 40px;
+        font-size: 25px;
+        font-weight: 200;
+        color: #868686;
+      }
+    }
+  }
+</style>
+
